@@ -41,7 +41,7 @@ void setup() {
   pinMode(buttonPin, INPUT);
   sheildSetUp();
 
-  /* Add shield setup data and potentially a notification text to the user letting them know that the sytem is active.*/
+  // Add potentially a notification text to the user letting them know that the sytem is active.
 }
 
 void loop() {
