@@ -1,6 +1,8 @@
 #include "DHT.h"
 #include "BotleticsSIM7000.h"
 #include <SoftwareSerial.h>
+#define SIMCOM-7000
+#define BOTLETICS_PWRKEY 6
 
 // Define Sensor Pins
 #define FSR_PIN A1
@@ -23,6 +25,7 @@ char URL[256];
 char cord1_buf[16];
 char cord2_buf[16];
 char temp_buf[16];
+char data[80];
 uint16_t statuscode;
 uint16_t length;
 
@@ -34,6 +37,7 @@ SoftwareSerial *modemSerial = &modemSS;
 Botletics_modem_LTE modem = Botletics_modem_LTE(); // Instantiate modem LTE class
 
 void setup() {
+  Serial.begin(9600);
   sheildSetUp();
   dht.begin();
   delay(1000);
@@ -63,12 +67,16 @@ void textCloudflare(float temp, float cord1, float cord2, char* type){
 
 void sheildSetUp(){
   //Setup code for the SIM7000A Sheild
+  modemSS.begin(115200);
+  delay(1000);
   modemSS.println("AT+IPR=9600"); // Manually set baud rate regardless of whether or not modem is actually on 115200
   delay(100); // Short pause to let the command run
   modemSS.begin(9600);
   modem.begin(modemSS);
+  modem.setFunctionality(1); // AT+CFUN=1
   modem.setNetworkSettings(F("hologram")); // For Hologram SIM card
   modem.openWirelessConnection(true); // Enable connection
+  modem.enableGPRS(true); // Enable GPRS
   modem.enableGPS(true); // Enable GPS
   delay(10000);
 }
