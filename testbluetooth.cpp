@@ -1,65 +1,75 @@
 #include <SoftwareSerial.h>
+SoftwareSerial BT(2, 3);
+boolean parentPresent = false;
+const char* MAC_Address = "DD88000011EE";
 
-SoftwareSerial BT(8, 9);
-const char* TARGET_MAC = "DD88000011EE";
+void sendCommand(const char* cmd) {
+  unsigned long start = millis(); //gets start time
+  String response = ""; //blank string for response
 
-bool parentPresent = false;
+  Serial.print("CMD: "); //prints command
+  Serial.println(cmd);  // prints command
+  BT.print(cmd); //sends command to module
 
-String sendCommand(String cmd, unsigned long timeout = 500) {
-  BT.print(cmd);
-  unsigned long start = millis();
-  String resp = "";
-
-  while (millis() - start < timeout) {
+  //parses all the data recived for 0.5 seconds
+  while (millis() - start < 3000) {
     while (BT.available()) {
-      resp += (char)BT.read();
+      response += (char)BT.read();
     }
   }
-  return resp;
+
+  //prints response
+  Serial.print("RESP: ");
+  Serial.println(response);
 }
 
-void setup() {
-  Serial.begin(9600);
-  BT.begin(9600);
-  delay(1500);
+void scanDevices() {
+  unsigned long start = millis(); //gets start time
+  String response = ""; //makes blank response string
 
-  Serial.println("Configuring HM-10...");
+  Serial.print("CMD: AT+DISI?");
+  BT.print("AT+DISI?"); //sends command to module
 
-  sendCommand("AT");
-  sendCommand("AT+RESET");
-  sendCommand("AT+ROLE1");
-  sendCommand("AT+IMME1");
-  sendCommand("AT+NOTI1");
-
-  // Start scan
-  sendCommand("AT+DISI?");
-
-  unsigned long scanStart = millis();
-  String scanData = "";
-
-  while (millis() - scanStart < 2500) {  // collect ~2.5s of data
+  //parses all the data recived for 3 seconds
+  while (millis() - start < 3000) {
     while (BT.available()) {
-      char c = BT.read();
-      scanData += c;
-      Serial.write(c);
+      response += (char)BT.read();
     }
   }
 
-  Serial.println("\n--- End of Scan ---");
+  //prints response
+  Serial.print("RESP: ");
+  Serial.println(response);
 
-  // Convert to uppercase (HM-10 sometimes mixes case, depending on firmware)
-  scanData.toUpperCase();
-
-  // Check for MAC anywhere in the scan dump
-  if (scanData.indexOf(TARGET_MAC) != -1) {
+  if (response.indexOf(MAC_Address) != -1) {
     parentPresent = true;
   } else {
     parentPresent = false;
   }
 
-  Serial.print("Parent present: ");
+  Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
 }
 
-void loop() {}
+void setup() {
+  Serial.begin(9600);
+  BT.begin(9600);
+  delay(500);
 
+  Serial.println("Setting up");
+
+  sendCommand("AT");          // establishes connection
+  sendCommand("ATE0");
+  sendCommand("AT+IMME1");    // manual connection
+  sendCommand("AT+ROLE1");    // sets device as a scanner
+  sendCommand("AT+NOTI1");    // enables notifications
+
+  // Bluetooth Scan
+  scanDevices();
+
+  Serial.println("-------------DONE-------------");
+}
+
+void loop() {
+  // Nothing needed here
+}
