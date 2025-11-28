@@ -1,7 +1,29 @@
-#include <SoftwareSerial.h>
-SoftwareSerial BT(2, 3);
+#define BT Serial2   // TX2=16, RX2=17
 boolean parentPresent = false;
 const char* MAC_Address = "DD88000011EE";
+
+void setup() {
+  Serial.begin(9600);
+  BT.begin(9600);
+  delay(500);
+
+  Serial.println("Setting up");
+
+  sendCommand("AT");          // establishes connection
+  sendCommand("ATE0");
+  sendCommand("AT+IMME1");    // manual connection
+  sendCommand("AT+ROLE1");    // sets device as a scanner
+  sendCommand("AT+NOTI1");    // enables notifications
+
+  // Bluetooth Scan
+  scanDevices();
+
+  Serial.println("-------------DONE-------------");
+}
+
+void loop() {
+  // Nothing needed here
+}
 
 void sendCommand(const char* cmd) {
   unsigned long start = millis(); //gets start time
@@ -49,27 +71,4 @@ void scanDevices() {
 
   Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
-}
-
-void setup() {
-  Serial.begin(9600);
-  BT.begin(9600);
-  delay(500);
-
-  Serial.println("Setting up");
-
-  sendCommand("AT");          // establishes connection
-  sendCommand("ATE0");
-  sendCommand("AT+IMME1");    // manual connection
-  sendCommand("AT+ROLE1");    // sets device as a scanner
-  sendCommand("AT+NOTI1");    // enables notifications
-
-  // Bluetooth Scan
-  scanDevices();
-
-  Serial.println("-------------DONE-------------");
-}
-
-void loop() {
-  // Nothing needed here
 }
