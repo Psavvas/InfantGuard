@@ -36,6 +36,15 @@ export default {
       } else if (type == 'gen') {
           msg += 'ALERT: Infant left unsupervised in vehicle. Please take immediate action to ensure the safety of the child.\nVehicle location: https://www.google.com/maps/search/?api=1&query=' + cord1 + ',' + cord2 + '\n If you think this is a mistake, temporairly disarm the system by pressing the reset button on the device.';
           const toNumber = '+12405619161';
+      } else if (type == 'stat' && temp == 1000) {
+          msg += 'InfantGuard system has been temporarily disarmed for 15 minutes. InfantGuard will not be monitoring the vehicle during this period.';
+          const toNumber = '+12405619161';
+      } else if (type == 'stat' && temp == 2000) {
+          msg += 'InfantGuard system has been reactivated and is now monitoring the vehicle.';
+          const toNumber = '+12405619161';
+      } else if (type == 'stat' && temp == 0) {
+          msg += 'InfantGuard has been turned on and is now monitoring the vehicle.';
+          const toNumber = '+12405619161';
       }
       const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
 

@@ -39,20 +39,14 @@ void setup() {
   Serial.begin(9600);
   sheildSetUp(); //SIM7000A Sheild Setup
   dht.begin();
+  bluetoothSetup(); //HM-10 Bluetooth Setup
   delay(1000);
-  Serial.println("System Active");
   pinMode(buttonPin, INPUT_PULLUP);
 
-  //HM-10 Bluetooth Setup
-  BT.begin(9600);
-  delay(1500);
-  sendCommand("AT");
-  sendCommand("AT+RESET");
-  sendCommand("AT+ROLE1");
-  sendCommand("AT+IMME1");
-  sendCommand("AT+NOTI1");
+  //Startup Notification
+  Serial.println("System Active");
+  textCloudflare(0, 0.0, 0.0, "stat");
 
-  // Potentially add a notification text to the user letting them know that the sytem is active.
 }
 
 void loop() {
@@ -98,15 +92,10 @@ void loop() {
   int buttonState = digitalRead(buttonPin);  // variable for reading the pushbutton status
   if (buttonState == LOW) {
     Serial.println("System disactivated for 15 minutes.");
+    textCloudflare(1000, 0.0, 0.0, "stat");
     delay(900000); //15 minute delay
+    textCloudflare(2000, 0.0, 0.0, "stat");
   }
-  
-  //For debugging purposes only
-  Serial.print("Temperature: ");
-  Serial.println(temp);
-  Serial.print("Force: ");
-  Serial.println(fsrValue);
-  delay(2000);
   
 }
 
@@ -167,30 +156,34 @@ void sendCommand(const char* cmd) {
 }
 
 void scanDevices() {
-  unsigned long start = millis(); //gets start time
-  String response = ""; //makes blank response string
 
-  Serial.print("CMD: AT+DISI?");
-  BT.print("AT+DISI?"); //sends command to module
+  for(int i = 0; i < 5; i++) {
+    unsigned long start = millis(); //gets start time
+    String response = ""; //makes blank response string
 
-  //parses all the data recived for 5 seconds
-  while (millis() - start < 5000) {
-    while (BT.available()) {
-      response += (char)BT.read();
+    Serial.print("CMD: AT+DISI?");
+    BT.print("AT+DISI?"); //sends command to module
+
+    //parses all the data recived for 5 seconds
+    while (millis() - start < 5000) {
+      while (BT.available()) {
+        response += (char)BT.read();
+      }
+    }
+    start = millis(); //resets start time
+
+    //prints response
+    Serial.print("RESP: ");
+    Serial.println(response);
+
+    if (response.indexOf(MAC_Address) != -1) {
+      parentPresent = true;
+      break;
+    } else {
+      parentPresent = false;
     }
   }
-  start = millis(); //resets start time
-
-  //prints response
-  Serial.print("RESP: ");
-  Serial.println(response);
-
-  if (response.indexOf(MAC_Address) != -1) {
-    parentPresent = true;
-  } else {
-    parentPresent = false;
-  }
-
+  
   Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
 }
