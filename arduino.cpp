@@ -7,7 +7,7 @@
 #define FSR_PIN A1
 #define DHT_PIN 7
 #define DHT_TYPE DHT22
-const int buttonPin = 8;  // the number of the pushbutton pin
+const int buttonPin = 2;  // Pusbutton pin is in digital 2, which allows interupt capability
 DHT dht(DHT_PIN, DHT_TYPE);
 
 // Global Varriables
@@ -17,6 +17,7 @@ const int deadlyTemp = 95; // Update temperature value that determines  deadly t
 bool parentPresent = false;
 unsigned long lastParentTextTime = 90000;
 unsigned long last911TextTime = 900000;
+volatile bool buttonPressed = false;
 
 //SMS Variables
 char URL[256];
@@ -42,6 +43,7 @@ void setup() {
   bluetoothSetup(); //HM-10 Bluetooth Setup
   delay(1000);
   pinMode(buttonPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(buttonPin), buttonStatus, FALLING); // Sets up interrupt on button pin
 
   //Startup Notification
   Serial.println("System Active");
@@ -63,6 +65,7 @@ void loop() {
   if (fsrValue >= childThreshold) {
     //Get GPS Coordinates
     Serial.println("Child Detected");
+    checkButton();
     float cord1, cord2, speed_kph, heading, altitude;
     modem.getGPS(&cord1, &cord2, &speed_kph, &heading, &altitude);
     Serial.println(parentPresent);
@@ -89,14 +92,14 @@ void loop() {
     }
   }
 
-  int buttonState = digitalRead(buttonPin);  // variable for reading the pushbutton status
-  if (buttonState == LOW) {
+  //Deactivation Button Check
+  if (buttonPressed) {
+    buttonPressed = false; //Reset button pressed variable
     Serial.println("System disactivated for 15 minutes.");
-    textCloudflare(1000, 0.0, 0.0, "stat");
+    textCloudflare(1000, 0.0, 0.0, "stat"); //Sent deactivation text
     delay(900000); //15 minute delay
-    textCloudflare(2000, 0.0, 0.0, "stat");
+    textCloudflare(2000, 0.0, 0.0, "stat"); //Sent reactivation text
   }
-  
 }
 
 void textCloudflare(float temp, float cord1, float cord2, char* type){
@@ -186,4 +189,9 @@ void scanDevices() {
   
   Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
+}
+
+void buttonStatus() {
+  // Interrupt Service Routine for button press
+  buttonPressed = true; //If button is pressed at any time, set buttonPressed is set to true
 }
