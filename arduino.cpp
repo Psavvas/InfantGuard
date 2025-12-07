@@ -28,7 +28,7 @@ char data[80];
 uint16_t statuscode;
 uint16_t length;
 
-//Sheild Variables
+//Shield Variables
 #define MODEM_SERIAL Serial1   // TX1=18, RX1=19
 Botletics_modem_LTE modem = Botletics_modem_LTE(); // Instantiate modem LTE class
 
@@ -38,7 +38,7 @@ const char* MAC_Address = "DD88000011EE";
 
 void setup() {
   Serial.begin(9600);
-  sheildSetUp(); //SIM7000A Sheild Setup
+  shieldSetUp(); //SIM7000A Shield Setup
   dht.begin();
   bluetoothSetup(); //HM-10 Bluetooth Setup
   delay(1000);
@@ -65,7 +65,6 @@ void loop() {
   if (fsrValue >= childThreshold) {
     //Get GPS Coordinates
     Serial.println("Child Detected");
-    checkButton();
     float cord1, cord2, speed_kph, heading, altitude;
     modem.getGPS(&cord1, &cord2, &speed_kph, &heading, &altitude);
     Serial.println(parentPresent);
@@ -111,8 +110,8 @@ void textCloudflare(float temp, float cord1, float cord2, char* type){
   modem.HTTP_GET_end();
 }
 
-void sheildSetUp(){
-  //Setup code for the SIM7000A Sheild
+void shieldSetUp(){
+  //Setup code for the SIM7000A Shield
   MODEM_SERIAL.begin(115200);
   delay(1000);
   MODEM_SERIAL.println("AT+IPR=9600"); // Manually set baud rate regardless of whether or not modem is actually on 115200
@@ -173,7 +172,6 @@ void scanDevices() {
         response += (char)BT.read();
       }
     }
-    start = millis(); //resets start time
 
     //prints response
     Serial.print("RESP: ");
