@@ -199,7 +199,6 @@ void scanDevices() {
   
   Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
-  Serial.println("falseParent" + falseParent);
 }
 
 void buttonStatus() {
