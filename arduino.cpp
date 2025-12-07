@@ -7,7 +7,7 @@
 #define FSR_PIN A1
 #define DHT_PIN 7
 #define DHT_TYPE DHT22
-const int buttonPin = 2;  // Pusbutton pin is in digital 2, which allows interupt capability
+const int buttonPin = 2;  // Pushbutton pin is in digital 2, which allows interupt capability
 DHT dht(DHT_PIN, DHT_TYPE);
 
 // Global Varriables
