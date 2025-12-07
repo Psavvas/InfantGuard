@@ -10,7 +10,7 @@
 const int buttonPin = 2;  // Pushbutton pin is in digital 2, which allows interupt capability
 DHT dht(DHT_PIN, DHT_TYPE);
 
-// Global Varriables
+// Global Variables
 const int childThreshold = 500; // Update FSR value that determines infant is present
 const int nearDeadlyTemp = 90; // Update temperature value that determines near deadly temperature
 const int deadlyTemp = 95; // Update temperature value that determines  deadly temperature
