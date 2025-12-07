@@ -158,7 +158,7 @@ void sendCommand(const char* cmd) {
 }
 
 void scanDevices() {
-
+  int falseParent = 0; //counts number of times parent device is not found or out of range
   for(int i = 0; i < 5; i++) {
     unsigned long start = millis(); //gets start time
     String response = ""; //makes blank response string
@@ -177,16 +177,29 @@ void scanDevices() {
     Serial.print("RESP: ");
     Serial.println(response);
 
-    if (response.indexOf(MAC_Address) != -1) {
-      parentPresent = true;
-      break;
+    //Check if parent device is found and within range
+    int index = response.indexOf(MAC_Address);
+    if (index != -1) {
+      int RSSI = response.substring(index + 13, index + 17).toInt();
+      if(RSSI <= -75) { //Check if RSSI is weak enough to be considered "out of range"
+        falseParent += 1;
+        Serial.println("BLE out of Range");
+      }
     } else {
-      parentPresent = false;
+      falseParent += 1;
+      Serial.println("BLE not found");
     }
+  }
+
+  if (falseParent >= 3) { //If parent device is not found or out of range 3 or more times, consider parent not present
+    parentPresent = false;
+  } else {
+    parentPresent = true;
   }
   
   Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
+  Serial.println("falseParent" + falseParent);
 }
 
 void buttonStatus() {
