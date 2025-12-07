@@ -167,7 +167,7 @@ void scanDevices() {
     Serial.print("CMD: AT+DISI?");
     BT.print("AT+DISI?"); //sends command to module
 
-    //parses all the data recived for 5 seconds
+    //parses all the data received for 5 seconds
     while (millis() - start < 5000) {
       while (BT.available()) {
         response += (char)BT.read();
