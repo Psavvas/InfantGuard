@@ -193,5 +193,5 @@ void scanDevices() {
 
 void buttonStatus() {
   // Interrupt Service Routine for button press
-  buttonPressed = true; //If button is pressed at any time, set buttonPressed is set to true
+  buttonPressed = true; // Set buttonPressed to true if button is pressed at any time
 }
