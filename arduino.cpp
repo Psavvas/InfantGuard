@@ -7,16 +7,17 @@
 #define FSR_PIN A1
 #define DHT_PIN 7
 #define DHT_TYPE DHT22
-const int buttonPin = 8;  // the number of the pushbutton pin
+const int buttonPin = 2;  // Pushbutton pin is in digital 2, which allows interupt capability
 DHT dht(DHT_PIN, DHT_TYPE);
 
-// Global Varriables
+// Global Variables
 const int childThreshold = 500; // Update FSR value that determines infant is present
 const int nearDeadlyTemp = 90; // Update temperature value that determines near deadly temperature
 const int deadlyTemp = 95; // Update temperature value that determines  deadly temperature
 bool parentPresent = false;
 unsigned long lastParentTextTime = 90000;
 unsigned long last911TextTime = 900000;
+volatile bool buttonPressed = false;
 
 //SMS Variables
 char URL[256];
@@ -27,7 +28,7 @@ char data[80];
 uint16_t statuscode;
 uint16_t length;
 
-//Sheild Variables
+//Shield Variables
 #define MODEM_SERIAL Serial1   // TX1=18, RX1=19
 Botletics_modem_LTE modem = Botletics_modem_LTE(); // Instantiate modem LTE class
 
@@ -37,22 +38,17 @@ const char* MAC_Address = "DD88000011EE";
 
 void setup() {
   Serial.begin(9600);
-  sheildSetUp(); //SIM7000A Sheild Setup
+  shieldSetUp(); //SIM7000A Shield Setup
   dht.begin();
+  bluetoothSetup(); //HM-10 Bluetooth Setup
   delay(1000);
-  Serial.println("System Active");
   pinMode(buttonPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(buttonPin), buttonStatus, FALLING); // Sets up interrupt on button pin
 
-  //HM-10 Bluetooth Setup
-  BT.begin(9600);
-  delay(1500);
-  sendCommand("AT");
-  sendCommand("AT+RESET");
-  sendCommand("AT+ROLE1");
-  sendCommand("AT+IMME1");
-  sendCommand("AT+NOTI1");
+  //Startup Notification
+  Serial.println("System Active");
+  textCloudflare(0, 0.0, 0.0, "stat");
 
-  // Potentially add a notification text to the user letting them know that the sytem is active.
 }
 
 void loop() {
@@ -95,19 +91,14 @@ void loop() {
     }
   }
 
-  int buttonState = digitalRead(buttonPin);  // variable for reading the pushbutton status
-  if (buttonState == LOW) {
+  //Deactivation Button Check
+  if (buttonPressed) {
+    buttonPressed = false; //Reset button pressed variable
     Serial.println("System disactivated for 15 minutes.");
+    textCloudflare(1000, 0.0, 0.0, "stat"); //Sent deactivation text
     delay(900000); //15 minute delay
+    textCloudflare(2000, 0.0, 0.0, "stat"); //Sent reactivation text
   }
-  
-  //For debugging purposes only
-  Serial.print("Temperature: ");
-  Serial.println(temp);
-  Serial.print("Force: ");
-  Serial.println(fsrValue);
-  delay(2000);
-  
 }
 
 void textCloudflare(float temp, float cord1, float cord2, char* type){
@@ -119,8 +110,8 @@ void textCloudflare(float temp, float cord1, float cord2, char* type){
   modem.HTTP_GET_end();
 }
 
-void sheildSetUp(){
-  //Setup code for the SIM7000A Sheild
+void shieldSetUp(){
+  //Setup code for the SIM7000A Shield
   MODEM_SERIAL.begin(115200);
   delay(1000);
   MODEM_SERIAL.println("AT+IPR=9600"); // Manually set baud rate regardless of whether or not modem is actually on 115200
@@ -167,30 +158,38 @@ void sendCommand(const char* cmd) {
 }
 
 void scanDevices() {
-  unsigned long start = millis(); //gets start time
-  String response = ""; //makes blank response string
 
-  Serial.print("CMD: AT+DISI?");
-  BT.print("AT+DISI?"); //sends command to module
+  for(int i = 0; i < 5; i++) {
+    unsigned long start = millis(); //gets start time
+    String response = ""; //makes blank response string
 
-  //parses all the data recived for 5 seconds
-  while (millis() - start < 5000) {
-    while (BT.available()) {
-      response += (char)BT.read();
+    Serial.print("CMD: AT+DISI?");
+    BT.print("AT+DISI?"); //sends command to module
+
+    //parses all the data received for 5 seconds
+    while (millis() - start < 5000) {
+      while (BT.available()) {
+        response += (char)BT.read();
+      }
+    }
+
+    //prints response
+    Serial.print("RESP: ");
+    Serial.println(response);
+
+    if (response.indexOf(MAC_Address) != -1) {
+      parentPresent = true;
+      break;
+    } else {
+      parentPresent = false;
     }
   }
-  start = millis(); //resets start time
-
-  //prints response
-  Serial.print("RESP: ");
-  Serial.println(response);
-
-  if (response.indexOf(MAC_Address) != -1) {
-    parentPresent = true;
-  } else {
-    parentPresent = false;
-  }
-
+  
   Serial.print("----------------\nParent present: ");
   Serial.println(parentPresent ? "YES" : "NO");
+}
+
+void buttonStatus() {
+  // Interrupt Service Routine for button press
+  buttonPressed = true; // Set buttonPressed to true if button is pressed at any time
 }
