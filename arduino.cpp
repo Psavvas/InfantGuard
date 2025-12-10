@@ -4,8 +4,7 @@
 #define BOTLETICS_PWRKEY 6
 
 // Define Sensor Pins
-#define FSR_PIN1 A1
-#define FSR_PIN2 A2
+#define FSR_PIN A1
 #define DHT_PIN 7
 #define DHT_TYPE DHT22
 const int buttonPin = 2;  // Pushbutton pin is in digital 2, which allows interupt capability
@@ -53,8 +52,7 @@ void setup() {
 }
 
 void loop() {
-  int fsrValue1 = analogRead(FSR_PIN1); //Reads and stores FSR value
-  int fsrValue2 = analogRead(FSR_PIN2); //Reads and stores FSR value
+  int fsrValue = analogRead(FSR_PIN); //Reads and stores FSR value
   float temp = dht.readTemperature(true); // Reads and stores FSR value in farenhite
   scanDevices();
   /* Add section that checks for battery level.
@@ -64,7 +62,7 @@ void loop() {
   */
 
   // Activates sytem if child is detected
-  if (fsrValue1 >= childThreshold || fsrValue2 >= childThreshold) {
+  if (fsrValue >= childThreshold) {
     //Get GPS Coordinates
     Serial.println("Child Detected");
     float cord1, cord2, speed_kph, heading, altitude;
