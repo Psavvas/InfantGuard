@@ -181,7 +181,7 @@ void scanDevices() {
     int index = response.indexOf(MAC_Address);
     if (index != -1) {
       int RSSI = response.substring(index + 13, index + 17).toInt();
-      if(RSSI <= -75) { //Check if RSSI is weak enough to be considered "out of range"
+      if(RSSI <= -85) { //Check if RSSI is weak enough to be considered "out of range"
         falseParent += 1;
         Serial.println("BLE out of Range");
       }
@@ -191,7 +191,7 @@ void scanDevices() {
     }
   }
 
-  if (falseParent >= 3) { //If parent device is not found or out of range 3 or more times, consider parent not present
+  if (falseParent >= 4) { //If parent device is not found or out of range 4 or more times, consider parent not present
     parentPresent = false;
   } else {
     parentPresent = true;
