@@ -48,6 +48,7 @@ InfantGuard is an open source project on GitHub. All coding files are publicly a
 - List all the parts
 ## 🌐 Learn More & Contribute
 To learn more about InfantGuard and this life-saving opensource project visit: www.paulsavvas.me/infantguard
+
 If you're interested in contributing feel free to fork the repository and submit a Pull Request. InfantGuard is designed to be an open-source, life-saving project.
 
 
