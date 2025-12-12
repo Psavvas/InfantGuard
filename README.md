@@ -24,15 +24,40 @@ InfantGuard is powered by an Arduino Mega 2560, to allow for multiple active Har
 ### 📦 Exterior and FSR Docking
 InfantGuard is conveniently placed into a 3D printed case, that allows for all wires, microcontrollers and sensors to conveniently be hidden. Furthermore the box allows for a mounting location for the push button, temperature sensor and HM-10, so that they can get more accurate readings.
 
-To allow for the car seat to easily be removed two docking components, 1 for each FSR sensor were created. A universal male and female component were created. This allows for two wire connectors to be slide in and for them to automatically connect, thanks to a funnel system when the car seat is reattached to its base. The universal male and female components can be modified with specific mounting brackets to fit the car's requirements. In this prototype, a more specifc varraint was created so that the two componetns could be moutned at the rear of the seat.
+To allow for the car seat to easily be removed two docking components, 1 for each FSR sensor were created. A universal male and female component were created. This allows for two wire connectors to be slide in and for them to automatically connect, thanks to a funnel system when the car seat is reattached to its base. The universal male and female components can be modified with specific mounting brackets to fit the car's requirements. In this prototype, a more specific variant was created so that the two components could be mounted at the rear of the seat.
+
+Both of these files can be found as an STL file on Thingiverse at the following link: www.google.com
 ### Add image
+
+### 🧵Wiring
+InfantGuard's wiring using generic Dupont Wires that can be either used on a breadboard and the Arduino or soldered onto a circuit if preferred.
+
+<img width="1280" height="720" alt="InfantGuard Circuit Schematic" src="https://github.com/user-attachments/assets/470edf90-954b-477a-a258-aee44d707836" />
 
 ## 🧑‍💻 Software
 InfantGuard is an open source project on GitHub. All coding files are publicly available on GitHub to learn more about the contributing visit the *Learn More and Contribute* section of this README. This project is made up of two major sections the on-device code and the cloud code. These were coded in Arduino Sketch and JavaScript respectively.
 ### 🔍 General Overview
+The following flow chart exhibits the general flow of InfantGuard across both on-device programs and cloud programs:
+<img width="1280" height="720" alt="SY26_ISEF_Presentation" src="https://github.com/user-attachments/assets/025bdcb7-74ea-4efb-b75a-7a0ec001a11e" />
 
-### 📲 Text Notification Setup
+### 📲 Text Notification Workflow
+1. SIM7000A establishes connection with local cellular towers via a Hologram SIM.
+2. The SIM7000A then establishes a connection with a specific webhook.site URL that include all the required information including vehicle location and temperature
+3. webhook.site then redirects the data received to a secure Cloudflare Worker.
+4. The Cloudflare Worker parses the data received and determines which message to send.
+5. Cloudflare fills the chosen message template with received variables before sending it to Twilio's API
+6. Twilio then take charge of the SMS delivery to the user's phone.
+### ⌨️ On-Device Code
+On-device code of InfantGuard, being coded in majority of Arduino Sketch has the majority of its code repeating itself in `void loop()`. The `void setup()` function is responsible for booting up the system, activating the sensors, establishing cellular and GPS connection as well as enabling the Bluetooth scanning. Inside `void loop()`, the program will always begin by checking the FSR sensor for an infant. If an infant is present then by precaution InfantGuard will record GPS location. InfantGuard will then scan for nearby Bluetooth devices using the MAC Address of the parent device and the RSSI signal strength value. InfantGuard uses this information to check whether the parent is present or not and also checks the temperature. Depending on these results, InfantGuard will determine whether it needs to send a text, and whether the text cooldown period has elapsed. If so it uses it cellular capabilities to communicate with the webhook.site
 
+### ☁️ Off-Device Code
+***Webhook.site:***
+Since the SIM7000A can only establish an HTTP connection, websites that don't enforce as a secure connection were required. A custom webhook.site was then created which allowed for the Arduino to communicate with the webhook, have the webhook parse the data, and create a custom action that redirects the information to a secure Cloudflare Worker. The webhook uses an HTTP redirect action that forwards to the Cloudflare Worker. The action uses a 'GET' method with the following programmable URL: 
+```
+https://arduino-twilio.pauldsavvas.workers.dev/?cord1=$request.query.cord1$&cord2=$request.query.cord2$&temp=$request.query.temp$&type=$request.query.type$
+```
+***Cloudflare Worker:***
+Once webhook.site relays the information to the Cloudflare Worker, it parses the URL data and determines which text message template to send. It then fills out the variables in the message template like temperature or vehicle location and securely communicates with the Twilio API. Twilio is the text message provider that was chosen to securely provide text notifications to the user's phone. The full Cloudflare worker code can be found in the file: `Cloudflare.js` This workflow also helps protect the API keys which can be stored as secret variables inside the Cloudflare Worker dashboard.
 ## 🪛 Full Parts List
 - List all the parts
 - List all the parts
