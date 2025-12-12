@@ -59,18 +59,25 @@ https://arduino-twilio.pauldsavvas.workers.dev/?cord1=$request.query.cord1$&cord
 ***Cloudflare Worker:***
 Once webhook.site relays the information to the Cloudflare Worker, it parses the URL data and determines which text message template to send. It then fills out the variables in the message template like temperature or vehicle location and securely communicates with the Twilio API. Twilio is the text message provider that was chosen to securely provide text notifications to the user's phone. The full Cloudflare worker code can be found in the file: `Cloudflare.js` This workflow also helps protect the API keys which can be stored as secret variables inside the Cloudflare Worker dashboard.
 ## 🪛 Full Parts List
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
-- List all the parts
+- Arduino Mega 2560
+- FSR Force Resistance Sensor
+- Temperature Sensor
+- HM-10 Bluetooth Module
+- iBeacon Transmitter
+- Breadboard
+- Dupont Wires
+- 3.7V LiPo Battery
+- 10000 mAh Belkin Battery Pack
+- PLA Filament
+- 10K Ω & 2K Ω Resistor
+- Type C to USB D Adapter
+- Push Button
+- Circuit Board
+- Circuit Board Mounts
+- Male & Female 12v DC Power Jack Adapter Connector
+- Screws & Nuts
+- PLA Filament
+
 ## 🌐 Learn More & Contribute
 To learn more about InfantGuard and this life-saving opensource project visit: www.paulsavvas.me/infantguard
 
