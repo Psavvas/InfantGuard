@@ -26,19 +26,30 @@ InfantGuard is conveniently placed into a 3D printed case, that allows for all w
 
 To allow for the car seat to easily be removed two docking components, 1 for each FSR sensor were created. A universal male and female component were created. This allows for two wire connectors to be slide in and for them to automatically connect, thanks to a funnel system when the car seat is reattached to its base. The universal male and female components can be modified with specific mounting brackets to fit the car's requirements. In this prototype, a more specific variant was created so that the two components could be mounted at the rear of the seat.
 
-Both of these files can be found as an STL file on Thingiverse at the following link: www.google.com
-### Add image
+Both of these files can be found as STL files on Thingiverse at the following link: www.google.com
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/edfd0030-a746-4da9-93bb-535f2fd2935c" alt="InfantGuard Mountable FSR Docking Components 1" style="width:320px; margin-right:12px;">
+  <img src="https://github.com/user-attachments/assets/33637767-4be1-48d4-a11b-8721f7af63bf" alt="InfantGuard Mountable FSR Docking Components 2" style="width:320px;">
+</p>
+<p align="center"><strong>Mountable InfantGuard FSR Docking Components</strong></p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3b0f6c85-e666-4a14-8905-3b7371bfaaf1" alt="InfantGuard Generic FSR Docking Components 1" style="width:320px; margin-right:12px;">
+  <img src="https://github.com/user-attachments/assets/80aefcca-c5c2-435d-acca-245b43f3f05a" alt="InfantGuard Generic FSR Docking Components 2" style="width:320px;">
+</p>
+<p align="center"><strong>Generic InfantGuard FSR Docking Components</strong></p>
 
 ### 🧵Wiring
 InfantGuard's wiring using generic Dupont Wires that can be either used on a breadboard and the Arduino or soldered onto a circuit if preferred.
 
 <img width="1280" height="720" alt="InfantGuard Circuit Schematic" src="https://github.com/user-attachments/assets/470edf90-954b-477a-a258-aee44d707836" />
+<p align="center"><strong>InfantGuard Circuit Schematic</strong></p>
 
 ## 🧑‍💻 Software
 InfantGuard is an open source project on GitHub. All coding files are publicly available on GitHub to learn more about the contributing visit the *Learn More and Contribute* section of this README. This project is made up of two major sections the on-device code and the cloud code. These were coded in Arduino Sketch and JavaScript respectively.
 ### 🔍 General Overview
 The following flow chart exhibits the general flow of InfantGuard across both on-device programs and cloud programs:
-<img width="1280" height="720" alt="SY26_ISEF_Presentation" src="https://github.com/user-attachments/assets/025bdcb7-74ea-4efb-b75a-7a0ec001a11e" />
+<img width="1280" height="720" alt="InfantGuard General Code Flow" src="https://github.com/user-attachments/assets/025bdcb7-74ea-4efb-b75a-7a0ec001a11e" />
+<p align="center"><strong>InfantGuard General Code Flow</strong></p>
 
 ### 📲 Text Notification Workflow
 1. SIM7000A establishes connection with local cellular towers via a Hologram SIM.
