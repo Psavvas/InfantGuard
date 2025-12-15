@@ -26,7 +26,7 @@ InfantGuard is conveniently placed into a 3D printed case, that allows for all w
 
 To allow for the car seat to easily be removed two docking components, 1 for each FSR sensor were created. A universal male and female component were created. This allows for two wire connectors to be slide in and for them to automatically connect, thanks to a funnel system when the car seat is reattached to its base. The universal male and female components can be modified with specific mounting brackets to fit the car's requirements. In this prototype, a more specific variant was created so that the two components could be mounted at the rear of the seat.
 
-Both of these files can be found as STL files on Thingiverse at the following link: www.google.com
+Both of these files can be found as STL files on Thingiverse at the following link: [https://www.thingiverse.com/psavvas/collections/43677561/things](https://www.thingiverse.com/psavvas/collections/43677561/things)
 <p align="center">
   <img src="https://github.com/user-attachments/assets/edfd0030-a746-4da9-93bb-535f2fd2935c" alt="InfantGuard Mountable FSR Docking Components 1" style="width:320px; margin-right:12px;">
   <img src="https://github.com/user-attachments/assets/33637767-4be1-48d4-a11b-8721f7af63bf" alt="InfantGuard Mountable FSR Docking Components 2" style="width:320px;">
