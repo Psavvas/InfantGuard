@@ -4,7 +4,8 @@
 #define BOTLETICS_PWRKEY 6
 
 // Define Sensor Pins
-#define FSR_PIN A1
+#define FSR_PIN1 A1
+#define FSR_PIN2 A2
 #define DHT_PIN 7
 #define DHT_TYPE DHT22
 const int buttonPin = 2;  // Pushbutton pin is in digital 2, which allows interupt capability
@@ -52,7 +53,8 @@ void setup() {
 }
 
 void loop() {
-  int fsrValue = analogRead(FSR_PIN); //Reads and stores FSR value
+  int fsrValue1 = analogRead(FSR_PIN1); //Reads and stores first FSR value
+  int fsrValue2 = analogRead(FSR_PIN2); //Reads and stores second FSR value
   float temp = dht.readTemperature(true); // Reads and stores FSR value in farenhite
   scanDevices();
   /* Add section that checks for battery level.
@@ -62,7 +64,7 @@ void loop() {
   */
 
   // Activates sytem if child is detected
-  if (fsrValue >= childThreshold) {
+  if (fsrValue1 >= childThreshold || fsrValue2 >= childThreshold) {
     //Get GPS Coordinates
     Serial.println("Child Detected");
     float cord1, cord2, speed_kph, heading, altitude;
@@ -181,7 +183,7 @@ void scanDevices() {
     int index = response.indexOf(MAC_Address);
     if (index != -1) {
       int RSSI = response.substring(index + 13, index + 17).toInt();
-      if(RSSI <= -75) { //Check if RSSI is weak enough to be considered "out of range"
+      if(RSSI <= -80) { //Check if RSSI is weak enough to be considered "out of range"
         falseParent += 1;
         Serial.println("BLE out of Range");
       }
@@ -191,7 +193,7 @@ void scanDevices() {
     }
   }
 
-  if (falseParent >= 3) { //If parent device is not found or out of range 3 or more times, consider parent not present
+  if (falseParent >= 4) { //If parent device is not found or out of range 4 or more times, consider parent not present
     parentPresent = false;
   } else {
     parentPresent = true;
