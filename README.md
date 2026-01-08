@@ -65,7 +65,7 @@ On-device code of InfantGuard, being coded in majority of Arduino Sketch has the
 ***Webhook.site:***
 Since the SIM7000A can only establish an HTTP connection, websites that don't enforce as a secure connection were required. A custom webhook.site was then created which allowed for the Arduino to communicate with the webhook, have the webhook parse the data, and create a custom action that redirects the information to a secure Cloudflare Worker. The webhook uses an HTTP redirect action that forwards to the Cloudflare Worker. The action uses a 'GET' method with the following programmable URL: 
 ```
-https://arduino-twilio.pauldsavvas.workers.dev/?cord1=$request.query.cord1$&cord2=$request.query.cord2$&temp=$request.query.temp$&type=$request.query.type$
+https://workerURLgoeshere.workers.dev/?cord1=$request.query.cord1$&cord2=$request.query.cord2$&temp=$request.query.temp$&type=$request.query.type$
 ```
 ***Cloudflare Worker:***
 Once webhook.site relays the information to the Cloudflare Worker, it parses the URL data and determines which text message template to send. It then fills out the variables in the message template like temperature or vehicle location and securely communicates with the Twilio API. Twilio is the text message provider that was chosen to securely provide text notifications to the user's phone. The full Cloudflare worker code can be found in the file: `Cloudflare.js` This workflow also helps protect the API keys which can be stored as secret variables inside the Cloudflare Worker dashboard.
