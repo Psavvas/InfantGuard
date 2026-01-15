@@ -48,7 +48,7 @@ InfantGuard's wiring using generic Dupont Wires that can be either used on a bre
 InfantGuard is an open source project on GitHub. All coding files are publicly available on GitHub to learn more about the contributing visit the *Learn More and Contribute* section of this README. This project is made up of two major sections the on-device code and the cloud code. These were coded in Arduino Sketch and JavaScript respectively.
 ### 🔍 General Overview
 The following flow chart exhibits the general flow of InfantGuard across both on-device programs and cloud programs:
-<img width="1280" height="720" alt="InfantGuard General Code Flow" src="https://github.com/user-attachments/assets/025bdcb7-74ea-4efb-b75a-7a0ec001a11e" />
+<img width="1280" height="720" alt="InfantGuard General Code Flow" src="https://github.com/user-attachments/assets/fdb080ad-8657-48f7-8dcf-02dd5bb4271f" />
 <p align="center"><strong>InfantGuard General Code Flow</strong></p>
 
 ### 📲 Text Notification Workflow
