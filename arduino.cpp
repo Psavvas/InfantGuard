@@ -70,7 +70,7 @@ void loop() {
     float cord1, cord2, speed_kph, heading, altitude;
     modem.getGPS(&cord1, &cord2, &speed_kph, &heading, &altitude);
     Serial.println(parentPresent);
-    if (temp >= deadlyTemp){
+    if (temp >= deadlyTemp && !parentPresent) {
       //Take Action to notify parent and call 911
       if (millis() - last911TextTime > 900000) { // Sends 911 text only once every 15 minutes
         textCloudflare(temp, cord1, cord2, "emg");
