@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup InfantGuard - Device Configuration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">🛡️InfantGuard</a>
+            <nav class="nav-links">
+                <a href="https://github.com/psavvas/infantguard" target="_blank" class="nav-btn">View Source Code</a>
+                <a href="https://paulsavvas.me/projects/infantguard" target="_blank" class="nav-btn">Project Page</a>
+                <a href="setup.html" class="nav-btn setup-header-btn">Activate</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="setup-container">
+        <div class="setup-layout">
+            <div class="setup-form-wrapper">
+            <h1>Activate InfantGuard</h1>
+            <p class="setup-subtitle">Let's activate InfantGuard to ensure 24/7 monitoring.</p>
+
+            <form id="setupForm">
+                <!-- Device ID -->
+                <div class="form-group">
+                    <label for="deviceId">Device ID <span style="color: red;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="deviceId" 
+                        name="deviceId" 
+                        placeholder="Enter your device ID as shown on the device"
+                        required
+                    >
+                </div>
+
+                <!-- User Phone Number -->
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number <span style="color: red;">*</span></label>
+                    <input 
+                        type="tel" 
+                        id="phoneNumber" 
+                        name="phoneNumber" 
+                        value="+1"
+                        placeholder="Enter your phone number (e.g., +1234567890)"
+                        required
+                    >
+                </div>
+
+                <!-- License Plate -->
+                <div class="form-group">
+                    <label for="licensePlate">License Plate <span style="color: red;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="licensePlate" 
+                        name="licensePlate" 
+                        placeholder="Enter your vehicle license plate"
+                        required
+                    >
+                </div>
+
+                <!-- Vehicle Details Row -->
+                <div class="form-row">
+                    <!-- Vehicle Make -->
+                    <div class="form-group">
+                        <label for="vehicleMake">Vehicle Make <span style="color: red;">*</span></label>
+                        <input 
+                            type="text" 
+                            id="vehicleMake" 
+                            name="vehicleMake" 
+                            placeholder="e.g., Toyota"
+                            required
+                        >
+                    </div>
+
+                    <!-- Vehicle Model -->
+                    <div class="form-group">
+                        <label for="vehicleModel">Vehicle Model <span style="color: red;">*</span></label>
+                        <input 
+                            type="text" 
+                            id="vehicleModel" 
+                            name="vehicleModel" 
+                            placeholder="e.g., Camry"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Vehicle Color -->
+                <div class="form-group">
+                    <label for="vehicleColor">Vehicle Color <span style="color: red;">*</span></label>
+                    <input 
+                        type="text" 
+                        id="vehicleColor" 
+                        name="vehicleColor" 
+                        placeholder="e.g., Silver"
+                        required
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Complete Setup</button>
+            </form>
+
+            <a href="index.html" class="back-link">← Back to Home</a>
+            </div>
+            <aside class="setup-media" aria-label="InfantGuard device preview">
+                <div class="setup-image-frame">
+                    <img src="../public/infantGuard.jpeg" alt="InfantGuard device placeholder" class="setup-image">
+                </div>
+                <p class="setup-image-caption">Device preview placeholder</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026. Created by Paul Savvas for the Great Mills High School STEM Academy, St. Mary's County Science & Engineering Fair and the Prince George's County Regional Science & Engineering Fair.</p>
+    </footer>
+
+    <script src="setupHandler.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Complete - InfantGuard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">🛡️InfantGuard</a>
+            <nav class="nav-links">
+                <a href="https://github.com/psavvas/infantguard" target="_blank" class="nav-btn">View Source Code</a>
+                <a href="https://paulsavvas.me/projects/infantguard" target="_blank" class="nav-btn">Project Page</a>
+                <a href="setup.html" class="nav-btn setup-header-btn">Activate</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="confirmation-container">
+        <div class="confirmation-wrapper">
+            <div class="confirmation-icon">✓</div>
+            <h1>Activation Complete!</h1>
+            <p>Your InfantGuard device has been successfully activated and is ready to monitor your child's safety.</p>
+
+            <div class="confirmation-details" id="details">
+                <!-- Configuration details will be added here on front end -->
+            </div>
+
+            <p>Your device will now provide real-time notifications and status updates.<br>If you ever need to update your information please contact us at: infantguard@paulsavvas.me</p>
+
+            <a href="index.html" class="confirmation-button">Return to Home</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026. Created by Paul Savvas for the Great Mills High School STEM Academy, St. Mary's County Science & Engineering Fair and the Prince George's County Regional Science & Engineering Fair.</p>
+    </footer>
+
+    <script>
+        // Retrieve saved configuration from localStorage
+        const config = JSON.parse(localStorage.getItem('infantGuardConfig'));
+
+        if (config) {
+            const detailsDiv = document.getElementById('details');
+            detailsDiv.innerHTML = `
+                <div class="detail-item">
+                    <span class="detail-label">Device ID</span>
+                    <span class="detail-value">${config.deviceId}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone Number</span>
+                    <span class="detail-value">${config.phoneNumber}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">License Plate</span>
+                    <span class="detail-value">${config.licensePlate}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Vehicle</span>
+                    <span class="detail-value">${config.vehicleColor} ${config.vehicleMake} ${config.vehicleModel}</span>
+                </div>
+            `;
+        } else {
+            // If no config found, show generic message
+            document.querySelector('.confirmation-details').innerHTML = '<p style="color: #999;">Configuration details not found</p>';
+        }
+    </script>
+</body>
+</html>
