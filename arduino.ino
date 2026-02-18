@@ -214,7 +214,9 @@ void scanDevices()
         falseParent += 1;
         Serial.println("BLE out of Range");
       }
-    } else {
+    } 
+    else 
+    {
       falseParent += 1;
       Serial.println("BLE not found");
     }
@@ -224,7 +226,9 @@ void scanDevices()
   { 
     //If parent device is not found or out of range 4 or more times, consider parent not present
     parentPresent = false;
-  } else {
+  } 
+  else 
+  {
     parentPresent = true;
   }
   
