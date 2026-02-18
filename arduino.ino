@@ -20,6 +20,9 @@ unsigned long lastParentTextTime = 90000;
 unsigned long last911TextTime = 900000;
 volatile bool buttonPressed = false;
 
+// DEVICE ID
+const char* deviceId = "001";
+
 //SMS Variables
 char URL[256];
 char cord1_buf[16];
@@ -37,7 +40,8 @@ Botletics_modem_LTE modem = Botletics_modem_LTE(); // Instantiate modem LTE clas
 #define BT Serial2   // TX2=16, RX2=17
 const char* MAC_Address = "DD88000011EE";
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
   shieldSetUp(); //SIM7000A Shield Setup
   dht.begin();
@@ -49,42 +53,44 @@ void setup() {
   //Startup Notification
   Serial.println("System Active");
   textCloudflare(0, 0.0, 0.0, "stat");
-
 }
 
-void loop() {
+void loop() 
+{
   int fsrValue1 = analogRead(FSR_PIN1); //Reads and stores first FSR value
   int fsrValue2 = analogRead(FSR_PIN2); //Reads and stores second FSR value
   float temp = dht.readTemperature(true); // Reads and stores FSR value in farenhite
   scanDevices();
-  /* Add section that checks for battery level.
-    - Potetnially use battery voltage
-    - Will be checked everytime void loop runs
-    - Notify Users if the temperature is below necessary threshold.
-  */
 
   // Activates sytem if child is detected
-  if (fsrValue1 >= childThreshold || fsrValue2 >= childThreshold) {
+  if (fsrValue1 >= childThreshold || fsrValue2 >= childThreshold) 
+  {
     //Get GPS Coordinates
     Serial.println("Child Detected");
     float cord1, cord2, speed_kph, heading, altitude;
     modem.getGPS(&cord1, &cord2, &speed_kph, &heading, &altitude);
     Serial.println(parentPresent);
-    if (temp >= deadlyTemp && !parentPresent) {
+    if (temp >= deadlyTemp && !parentPresent) 
+    {
       //Take Action to notify parent and call 911
-      if (millis() - last911TextTime > 900000) { // Sends 911 text only once every 15 minutes
+      if (millis() - last911TextTime > 900000) 
+      { // Sends 911 text only once every 15 minutes
         textCloudflare(temp, cord1, cord2, "emg");
         last911TextTime = millis();
         Serial.println("911 Text Sent");
       }
-      if (millis() - lastParentTextTime > 90000) { // Sends parent text only once every 90 seconds
+      if (millis() - lastParentTextTime > 90000) 
+      { // Sends parent text only once every 90 seconds
         textCloudflare(temp, cord1, cord2, "gen");
         lastParentTextTime = millis();
         Serial.println("Parent Text Sent");
       }
       Serial.println("Detected infant and deadly temperature");
-    } else if (!parentPresent){
-      if (millis() - lastParentTextTime > 90000) { // Sends parent text only once every 90 seconds
+    } else if (!parentPresent)
+    {
+      if (millis() - lastParentTextTime > 90000) 
+      { 
+        // Sends parent text only once every 90 seconds
         textCloudflare(temp, cord1, cord2, "gen");
         lastParentTextTime = millis();
         Serial.println("Parent Text Sent");
@@ -94,7 +100,8 @@ void loop() {
   }
 
   //Deactivation Button Check
-  if (buttonPressed) {
+  if (buttonPressed) 
+  {
     buttonPressed = false; //Reset button pressed variable
     Serial.println("System disactivated for 15 minutes.");
     textCloudflare(1000, 0.0, 0.0, "stat"); //Sent deactivation text
@@ -103,16 +110,18 @@ void loop() {
   }
 }
 
-void textCloudflare(float temp, float cord1, float cord2, char* type){
+void textCloudflare(float temp, float cord1, float cord2, char* type)
+{
   dtostrf(cord1, 1, 6, cord1_buf);
   dtostrf(cord2, 1, 6, cord2_buf);
   dtostrf(temp,  1, 1, temp_buf);
-  snprintf(URL, sizeof(URL), "http://webhook.site/infantguard/?cord1=%s&cord2=%s&temp=%s&type=%s", cord1_buf, cord2_buf, temp_buf, type);
+  snprintf(URL, sizeof(URL), "http://webhook.site/infantGrd/?cord1=%s&cord2=%s&temp=%s&type=%s&deviceId%s", cord1_buf, cord2_buf, temp_buf, type, deviceId);
   modem.HTTP_GET_start(URL, &statuscode, &length);
   modem.HTTP_GET_end();
 }
 
-void shieldSetUp(){
+void shieldSetUp()
+{
   //Setup code for the SIM7000A Shield
   MODEM_SERIAL.begin(115200);
   delay(1000);
@@ -128,7 +137,8 @@ void shieldSetUp(){
   delay(10000);
 }
 
-void bluetoothSetup(){
+void bluetoothSetup()
+{
   //HM-10 Bluetooth Setup
   BT.begin(9600);
   delay(1500);
@@ -139,7 +149,8 @@ void bluetoothSetup(){
   sendCommand("AT+NOTI1");    // enables notifications
 }
 
-void sendCommand(const char* cmd) {
+void sendCommand(const char* cmd)
+{
   unsigned long start = millis(); //gets start time
   String response = ""; //blank string for response
 
@@ -148,8 +159,10 @@ void sendCommand(const char* cmd) {
   BT.print(cmd); //sends command to module
 
   //parses all the data recived for 0.5 seconds
-  while (millis() - start < 3000) {
-    while (BT.available()) {
+  while (millis() - start < 3000)
+  {
+    while (BT.available())
+    {
       response += (char)BT.read();
     }
   }
@@ -159,9 +172,11 @@ void sendCommand(const char* cmd) {
   Serial.println(response);
 }
 
-void scanDevices() {
+void scanDevices()
+{
   int falseParent = 0; //counts number of times parent device is not found or out of range
-  for(int i = 0; i < 5; i++) {
+  for(int i = 0; i < 5; i++)
+  {
     unsigned long start = millis(); //gets start time
     String response = ""; //makes blank response string
 
@@ -169,8 +184,10 @@ void scanDevices() {
     BT.print("AT+DISI?"); //sends command to module
 
     //parses all the data received for 5 seconds
-    while (millis() - start < 5000) {
-      while (BT.available()) {
+    while (millis() - start < 10000)
+    {
+      while (BT.available()) 
+      {
         response += (char)BT.read();
       }
     }
@@ -181,21 +198,30 @@ void scanDevices() {
 
     //Check if parent device is found and within range
     int index = response.indexOf(MAC_Address);
-    if (index != -1) {
+    if (index != -1) 
+    {
       int RSSI = response.substring(index + 13, index + 17).toInt();
-      if(RSSI <= -80) { //Check if RSSI is weak enough to be considered "out of range"
+      if(RSSI <= -80) 
+      { 
+        //Check if RSSI is weak enough to be considered "out of range"
         falseParent += 1;
         Serial.println("BLE out of Range");
       }
-    } else {
+    } 
+    else 
+    {
       falseParent += 1;
       Serial.println("BLE not found");
     }
   }
 
-  if (falseParent >= 4) { //If parent device is not found or out of range 4 or more times, consider parent not present
+  if (falseParent >= 4) 
+  { 
+    //If parent device is not found or out of range 4 or more times, consider parent not present
     parentPresent = false;
-  } else {
+  } 
+  else 
+  {
     parentPresent = true;
   }
   
@@ -203,7 +229,8 @@ void scanDevices() {
   Serial.println(parentPresent ? "YES" : "NO");
 }
 
-void buttonStatus() {
-  // Interrupt Service Routine for button press
+void buttonStatus() 
+{
+  // Attach Interrupt function
   buttonPressed = true; // Set buttonPressed to true if button is pressed at any time
 }
