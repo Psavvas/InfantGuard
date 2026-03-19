@@ -9,7 +9,7 @@
 #define DHT_PIN 7
 #define DHT_TYPE DHT22
 const int buttonPin = 2;  // Pushbutton pin is in digital 2, which allows interupt capability
-DHT dht(DHT_PIN, DHT_TYPE);
+DHT dht(DHT_PIN, DHT_TYPE);  
 
 // Global Variables
 const int childThreshold = 500; // Update FSR value that determines infant is present
@@ -82,6 +82,7 @@ void loop()
       if (millis() - last911TextTime > 900000) 
       { 
         // Sends 911 text only once every 15 minutes
+        Serial.println("Sending Emergency Text to 911");
         textCloudflare(temp, cord1, cord2, "emg", DEVICE_ID);
         last911TextTime = millis();
         Serial.println("911 Text Sent");
@@ -89,6 +90,7 @@ void loop()
       if (millis() - lastParentTextTime > 90000) 
       { 
         // Sends parent text only once every 90 seconds
+        Serial.println("Sending Emergency Text to parent");
         textCloudflare(temp, cord1, cord2, "gen", DEVICE_ID);
         lastParentTextTime = millis();
         Serial.println("Parent Text Sent");
@@ -99,6 +101,7 @@ void loop()
       if (millis() - lastParentTextTime > 90000) 
       { 
         // Sends parent text only once every 90 seconds
+        Serial.println("Sending General Text to parent");
         textCloudflare(temp, cord1, cord2, "gen", DEVICE_ID);
         lastParentTextTime = millis();
         Serial.println("Parent Text Sent");
@@ -115,17 +118,50 @@ void loop()
     textCloudflare(1000, 0.0, 0.0, "stat", DEVICE_ID); //Sent deactivation text
     delay(900000); //15 minute delay
     textCloudflare(2000, 0.0, 0.0, "stat", DEVICE_ID); //Sent reactivation text
+    Serial.println("System re-activated");
   }
 }
 
-void textCloudflare(float temp, float cord1, float cord2, char* type, char* deviceId)
+void textCloudflare(float temp, float cord1, float cord2, const char* type, const char* deviceId)
 {
   dtostrf(cord1, 1, 6, cord1_buf);
   dtostrf(cord2, 1, 6, cord2_buf);
   dtostrf(temp,  1, 1, temp_buf);
   snprintf(URL, sizeof(URL), "http://webhook.site/infantGrd/?cord1=%s&cord2=%s&temp=%s&type=%s&deviceId=%s", cord1_buf, cord2_buf, temp_buf, type, deviceId);
-  modem.HTTP_GET_start(URL, &statuscode, &length);
-  modem.HTTP_GET_end();
+  
+  // Try sending up to 2 times
+  for (int attempt = 1; attempt <= 2; attempt++) {
+    
+    // Check if GPRS is active, if not, turn it on
+    if (!modem.GPRSstate()) {
+      Serial.println("GPRS inactive.");
+      modem.enableGPRS(true);
+      delay(3000); // Wait for the network to assign an IP
+    }
+
+    Serial.print("HTTP GET Attempt ");
+    Serial.println(attempt);
+    
+    modem.HTTP_GET_start(URL, &statuscode, &length);
+    modem.HTTP_GET_end();
+
+    if (statuscode == 200) {
+      Serial.println("HTTP Success! (200)");
+      break; // Break out of the retry loop if connection worked.
+    } else {
+      Serial.print("HTTP Failed. Code: ");
+      Serial.println(statuscode);
+      
+      // Force a network reset if a 601 error occured
+      if (statuscode == 601) {
+        Serial.println("Forcing GPRS reset");
+        modem.enableGPRS(false); // Turn GPRS off
+        delay(2000);
+        modem.enableGPRS(true);  // Turn GPRS back on
+        delay(3000);
+      }
+    }
+  }
 }
 
 void shieldSetUp()
@@ -214,9 +250,7 @@ void scanDevices()
         falseParent += 1;
         Serial.println("BLE out of Range");
       }
-    } 
-    else 
-    {
+    } else {
       falseParent += 1;
       Serial.println("BLE not found");
     }
@@ -226,9 +260,7 @@ void scanDevices()
   { 
     //If parent device is not found or out of range 4 or more times, consider parent not present
     parentPresent = false;
-  } 
-  else 
-  {
+  } else {
     parentPresent = true;
   }
   
@@ -238,7 +270,7 @@ void scanDevices()
 
 void buttonStatus() 
 {
-  // Interrupt Service Routine for button press
+  // Attach Interrupt function for button press
+  Serial.println("=========== Button Pressed ===========");
   buttonPressed = true; // Set buttonPressed to true if button is pressed at any time
 }
-
