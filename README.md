@@ -90,7 +90,7 @@ Once webhook.site relays the information to the Cloudflare Worker, it parses the
 - PLA Filament
 
 ## 🌐 Learn More & Contribute
-To learn more about InfantGuard and this life-saving opensource project visit: www.paulsavvas.me/infantguard
+To learn more about InfantGuard and this life-saving opensource project visit: www.paulsavvas.me/redirect/infantguard
 
 If you're interested in contributing feel free to fork the repository and submit a Pull Request. InfantGuard is designed to be an open-source, life-saving project.
 
