@@ -89,10 +89,19 @@ Once webhook.site relays the information to the Cloudflare Worker, it parses the
 - Screws & Nuts
 - PLA Filament
 
+## 🙏 Aknowledgements
+A huge thank you to the following individuals, organizations and companies for providing time, resources or assistance and helping making InfantGuard a possibility.
+
+- **[webhook.site](webhook.site):** for providing me with a free pro plan during the duration of this project allowing the InfantGuard device to securely communicate with the Cloudflare server.
+- **[PCB Way](www.pcbway.com):** for sending me free custom-built circuit boards as well as a professionally 3D printed case for the InfantGuard device.
+- **[Great Mills High School STEM Academy](gmhs.smcps.org):** for their continued support, free 3D printing and mentorship, helping make this project a possibility.
+- **My Family:** for their support, helping buy supplies and for continuing to motivate me during this project.
+
 ## 🌐 Learn More & Contribute
 To learn more about InfantGuard and this life-saving opensource project visit: www.paulsavvas.me/redirect/infantguard
 
 If you're interested in contributing feel free to fork the repository and submit a Pull Request. InfantGuard is designed to be an open-source, life-saving project.
 
+---
 
-*InfantGuard was created as a 2025 Engineering Fair Project for the Great Mills High School STEM Academy and the St. Mary's County Science & Engineering Fair. It was created by Paul Savvas.*
+*InfantGuard was created as a 2026 Engineering Fair Project for the Great Mills High School STEM Academy, St. Mary's County Science & Engineering Fair and the Prince George's Area Sience & Engineering Fair. It was created by Paul Savvas.*
